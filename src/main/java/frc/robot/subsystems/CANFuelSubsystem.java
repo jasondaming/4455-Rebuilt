@@ -4,20 +4,16 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkFlex;
 
-
-
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -41,19 +37,22 @@ public class CANFuelSubsystem extends SubsystemBase {
     // the config to the controller
     SparkMaxConfig feederConfig = new SparkMaxConfig();
     feederConfig.smartCurrentLimit(INDEXER_MOTOR_CURRENT_LIMIT);
-    Indexer.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    REVLibError indexerErr = Indexer.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    System.out.println("Indexer (ID " + INDEXER_MOTOR_ID + ") configure: " + indexerErr);
 
     // create the configuration for the launcher roller, set a current limit, set
     // the motor to inverted so that positive values are used for both intaking and
     // launching, and apply the config to the controller
-     SparkMaxConfig launcherConfig = new SparkMaxConfig();
+    SparkFlexConfig launcherConfig = new SparkFlexConfig();
 
     launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
     launcherConfig.voltageCompensation(12);
     launcherConfig.idleMode(IdleMode.kCoast);
-    RightIntakeLauncher.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    REVLibError rightErr = RightIntakeLauncher.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    System.out.println("Right launcher (ID " + RIGHT_INTAKE_LAUNCHER_MOTOR_ID + ") configure: " + rightErr);
     launcherConfig.inverted(true);
-    LeftIntakeLauncher.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    REVLibError leftErr = LeftIntakeLauncher.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    System.out.println("Left launcher (ID " + LEFT_INTAKE_LAUNCHER_MOTOR_ID + ") configure: " + leftErr);
 
     // put default values for various fuel operations onto the dashboard
     // all commands using this subsystem pull values from the dashbaord to allow
@@ -86,6 +85,8 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Left Launcher Output", LeftIntakeLauncher.get());
+    SmartDashboard.putNumber("Right Launcher Output", RightIntakeLauncher.get());
+    SmartDashboard.putNumber("Indexer Output", Indexer.get());
   }
 }
