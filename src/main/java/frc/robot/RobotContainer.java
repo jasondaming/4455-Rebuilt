@@ -99,14 +99,14 @@ public class RobotContainer {
         driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        driverController.rightBumper().whileTrue(Commands.startEnd(() -> turtlemode = .3, () -> turtlemode = 1.0));
+        driverController.rightBumper().whileTrue(Commands.startEnd(() -> turtlemode = .2, () -> turtlemode = 1.0));
 
         // Intake: spin up rollers while held, stop on release
         operatorController.leftBumper().whileTrue(
             fuelSubsystem.startEnd(
                 () -> {
-                    fuelSubsystem.setIntakeLauncherRoller(SmartDashboard.getNumber("Intaking intake roller value", INTAKE_INTAKING_PERCENT));
-                    fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Intaking feeder roller value", INDEXER_INTAKING_PERCENT));
+                    fuelSubsystem.setIntakeLauncherRoller(-.8 * SmartDashboard.getNumber("Intaking intake roller value", INTAKE_INTAKING_PERCENT));
+                    fuelSubsystem.setFeederRoller(-.8 * SmartDashboard.getNumber("Intaking feeder roller value", INDEXER_INTAKING_PERCENT));
                 },
                 fuelSubsystem::stop
             )
@@ -117,15 +117,15 @@ public class RobotContainer {
             Commands.sequence(
                 fuelSubsystem.startEnd(
                     () -> {
-                        fuelSubsystem.setIntakeLauncherRoller(SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_PERCENT));
-                        fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Launching spin-up feeder value", INDEXER_SPIN_UP_PRE_LAUNCH_PERCENT));
+                        fuelSubsystem.setIntakeLauncherRoller(-.8 * SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_PERCENT));
+                        fuelSubsystem.setFeederRoller(.8 * SmartDashboard.getNumber("Launching spin-up feeder value", INDEXER_SPIN_UP_PRE_LAUNCH_PERCENT));
                     },
                     () -> {}
                 ).withTimeout(SPIN_UP_SECONDS),
                 fuelSubsystem.startEnd(
                     () -> {
-                        fuelSubsystem.setIntakeLauncherRoller(SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_PERCENT));
-                        fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Launching feeder roller value", INDEXER_LAUNCHING_PERCENT));
+                        fuelSubsystem.setIntakeLauncherRoller(-.8 * SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_PERCENT));
+                        fuelSubsystem.setFeederRoller(.8 * SmartDashboard.getNumber("Launching feeder roller value", INDEXER_LAUNCHING_PERCENT));
                     },
                     fuelSubsystem::stop
                 )
@@ -136,8 +136,8 @@ public class RobotContainer {
         operatorController.a().whileTrue(
             fuelSubsystem.startEnd(
                 () -> {
-                    fuelSubsystem.setIntakeLauncherRoller(-1 * SmartDashboard.getNumber("Intaking intake roller value", INTAKE_EJECT_PERCENT));
-                    fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Intaking intake roller value", INDEXER_LAUNCHING_PERCENT));
+                    fuelSubsystem.setIntakeLauncherRoller(SmartDashboard.getNumber("Intaking intake roller value", INTAKE_EJECT_PERCENT));
+                    fuelSubsystem.setFeederRoller(-1 * SmartDashboard.getNumber("Intaking intake roller value", INDEXER_LAUNCHING_PERCENT));
                 },
                 fuelSubsystem::stop
             )

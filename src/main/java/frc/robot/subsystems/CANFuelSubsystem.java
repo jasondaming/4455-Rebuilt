@@ -31,7 +31,7 @@ public class CANFuelSubsystem extends SubsystemBase {
     LeftIntakeLauncher = new SparkFlex(LEFT_INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushless);
     RightIntakeLauncher = new SparkFlex(RIGHT_INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushless);
     Indexer = new SparkMax(INDEXER_MOTOR_ID, MotorType.kBrushless);
-    //LeftIntakeLauncher.setInverted(true);
+    LeftIntakeLauncher.setInverted(true);
 
     // create the configuration for the feeder roller, set a current limit and apply
     // the config to the controller
@@ -50,7 +50,7 @@ public class CANFuelSubsystem extends SubsystemBase {
     launcherConfig.idleMode(IdleMode.kCoast);
     REVLibError rightErr = RightIntakeLauncher.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     System.out.println("Right launcher (ID " + RIGHT_INTAKE_LAUNCHER_MOTOR_ID + ") configure: " + rightErr);
-    launcherConfig.inverted(true);
+    //launcherConfig.inverted(true);
     REVLibError leftErr = LeftIntakeLauncher.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     System.out.println("Left launcher (ID " + LEFT_INTAKE_LAUNCHER_MOTOR_ID + ") configure: " + leftErr);
 
