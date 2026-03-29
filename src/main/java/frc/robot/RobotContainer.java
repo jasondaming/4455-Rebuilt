@@ -59,7 +59,10 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        // Named commands must be registered before building the auto chooser
+        Autos.registerNamedCommands(fuelSubsystem, climberSubsystem);
+
+        autoChooser = AutoBuilder.buildAutoChooser("ShootOnly");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
