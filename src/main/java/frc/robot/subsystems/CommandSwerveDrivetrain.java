@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -203,6 +204,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
+            System.out.println("[PathPlanner] RobotConfig loaded OK — mass=" + config.massKG
+                + " kg, modules=" + config.moduleLocations.length);
+
             AutoBuilder.configure(
                 () -> getState().Pose,   // Supplier of current robot pose
                 this::resetPose,         // Consumer for seeding pose against auto
@@ -224,8 +228,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this // Subsystem for requirements
             );
+
+            SmartDashboard.putBoolean("PathPlanner/Configured", true);
+            System.out.println("[PathPlanner] AutoBuilder configured successfully");
         } catch (Exception ex) {
+            SmartDashboard.putBoolean("PathPlanner/Configured", false);
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+            System.out.println("[PathPlanner] CONFIG FAILED: " + ex.getMessage());
         }
     }
 

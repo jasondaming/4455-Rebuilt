@@ -7,7 +7,9 @@ package frc.robot;
 import com.ctre.phoenix6.HootAutoReplay;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -67,6 +69,26 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+        // ── Diagnostics ─────────────────────────────────────────────────────
+        String cmdName = (m_autonomousCommand != null) ? m_autonomousCommand.getName() : "NULL";
+        var pose = m_robotContainer.drivetrain.getState().Pose;
+        var alliance = DriverStation.getAlliance();
+
+        System.out.println("[Auto] ==========================================");
+        System.out.println("[Auto] Command    : " + cmdName);
+        System.out.println("[Auto] Start pose : x=" + String.format("%.3f", pose.getX())
+            + " y=" + String.format("%.3f", pose.getY())
+            + " rot=" + String.format("%.1f", pose.getRotation().getDegrees()) + " deg");
+        System.out.println("[Auto] Alliance   : " + (alliance.isPresent() ? alliance.get() : "UNKNOWN — defaulting to Blue"));
+        System.out.println("[Auto] ==========================================");
+
+        SmartDashboard.putString("Auto/Command",   cmdName);
+        SmartDashboard.putString("Auto/StartPose", String.format("(%.2f, %.2f, %.1f°)",
+            pose.getX(), pose.getY(), pose.getRotation().getDegrees()));
+        SmartDashboard.putString("Auto/Alliance",  alliance.isPresent() ? alliance.get().toString() : "UNKNOWN");
+        SmartDashboard.putString("Auto/Phase",     "Init");
+        // ────────────────────────────────────────────────────────────────────
 
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
