@@ -5,21 +5,34 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Shoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeftBumpToLeftUpright"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "HookOpen"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "LeftBumpToLeftUpright"
+            "name": "ShootFar"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ClimbUp"
+            "name": "ClimbDown"
           }
         }
       ]

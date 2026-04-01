@@ -62,6 +62,26 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
 
-  
-  } 
+
+  }
+
+  /**
+   * Constants for autonomous command timing.
+   *
+   * <p>Tuning guide:
+   * <ul>
+   *   <li>{@code AUTO_HOOK_OPEN_SECONDS}  – how long to run the climber UP at auto start to open hooks</li>
+   *   <li>{@code AUTO_HOOK_CLOSE_SECONDS} – how long to run the climber DOWN when hanging at the tower</li>
+   *   <li>{@code AUTO_FEED_FAR_SECONDS}   – feeder run time for the far (tower) shot</li>
+   *   <li>{@code AUTO_LAUNCHER_FAR_MULT}  – launcher power multiplier for the far (tower) shot</li>
+   *   <li>{@code AUTO_FEED_NEAR_SECONDS}  – feeder run time for the near (~3 ft from hub) shot</li>
+   * </ul>
+   */
+  public static final class AutoConstants {
+    public static final double AUTO_HOOK_OPEN_SECONDS  = 3.0;
+    public static final double AUTO_HOOK_CLOSE_SECONDS = 5.0;
+    public static final double AUTO_FEED_FAR_SECONDS   = 2.0;
+    public static final double AUTO_LAUNCHER_FAR_MULT  = 0.95;
+    public static final double AUTO_FEED_NEAR_SECONDS  = 1.5;
+  }
 }
