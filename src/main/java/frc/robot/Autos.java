@@ -153,10 +153,7 @@ public class Autos {
                 fuel.setFeederRoller(0.8 * INDEXER_SPIN_UP_PRE_LAUNCH_PERCENT);
             }, fuel)
             .withTimeout(SPIN_UP_SECONDS)
-            .finallyDo(() -> {
-                fuel.stop();
-                System.out.println("[Auto][SpinUp] Done");
-            })
+            .andThen(Commands.runOnce(() -> System.out.println("[Auto][SpinUp] Done — launcher staying on")))
         ).withName("SpinUp");
     }
 
