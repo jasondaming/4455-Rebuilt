@@ -197,7 +197,7 @@ public class Autos {
         final SwerveRequest.RobotCentric driveReq = new SwerveRequest.RobotCentric();
 
         Command drive1 = drivetrain.applyRequest(
-                () -> driveReq.withVelocityX(-EVERYBOT_DRIVE_SPEED).withVelocityY(0).withRotationalRate(0))
+                () -> driveReq.withVelocityX(EVERYBOT_DRIVE_SPEED).withVelocityY(0).withRotationalRate(0))
             .withTimeout(EVERYBOT_DRIVE1_SECONDS)
             .beforeStarting(Commands.runOnce(() -> {
                 System.out.println("[Auto][Everybot] Drive 1 start");
@@ -205,21 +205,20 @@ public class Autos {
             }));
 
         Command drive2 = drivetrain.applyRequest(
-                () -> driveReq.withVelocityX(-EVERYBOT_DRIVE_SPEED).withVelocityY(0).withRotationalRate(0))
+                () -> driveReq.withVelocityX(EVERYBOT_DRIVE_SPEED).withVelocityY(0).withRotationalRate(0))
             .withTimeout(EVERYBOT_DRIVE2_SECONDS)
             .beforeStarting(Commands.runOnce(() -> {
                 System.out.println("[Auto][Everybot] Drive 2 start");
                 SmartDashboard.putString("Auto/Phase", "Everybot_Drive2");
             }));
 
+        // SpinUp runs alongside drive1; ends when drive1 ends (motor holds speed).
+        // ShootFeed fires immediately after drive1 — no waiting for HookOpen.
+        // HookOpen runs alongside drive2 so hooks are open by the time we reach the tower.
         return Commands.sequence(
-            Commands.parallel(
-                drive1,
-                buildHookOpenCommand(climber),
-                buildSpinUpCommand(fuel)
-            ),
+            Commands.deadline(drive1, buildSpinUpCommand(fuel)),
             buildShootFeedCommand(fuel),
-            drive2,
+            Commands.deadline(drive2, buildHookOpenCommand(climber)),
             buildClimbDownCommand(climber)
         ).withName("Everybot");
     }
