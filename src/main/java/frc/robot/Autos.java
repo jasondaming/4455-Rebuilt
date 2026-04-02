@@ -195,6 +195,7 @@ public class Autos {
     public static Command buildEverbotCommand(CANFuelSubsystem fuel, ClimberSubsystem climber,
             CommandSwerveDrivetrain drivetrain) {
         final SwerveRequest.RobotCentric driveReq = new SwerveRequest.RobotCentric();
+        final SwerveRequest.SwerveDriveBrake brakeReq = new SwerveRequest.SwerveDriveBrake();
 
         Command drive1 = drivetrain.applyRequest(
                 () -> driveReq.withVelocityX(EVERYBOT_DRIVE_SPEED).withVelocityY(0).withRotationalRate(0))
@@ -212,14 +213,14 @@ public class Autos {
                 SmartDashboard.putString("Auto/Phase", "Everybot_Drive2");
             }));
 
-        // SpinUp runs alongside drive1; ends when drive1 ends (motor holds speed).
-        // ShootFeed fires immediately after drive1 — no waiting for HookOpen.
-        // HookOpen runs alongside drive2 so hooks are open by the time we reach the tower.
+        // drive1 is the deadline — HookOpen and SpinUp are cancelled when drive1 ends.
+        // During ShootFeed and ClimbDown the drivetrain is explicitly braked so the
+        // default joystick command cannot take over and drive the robot.
         return Commands.sequence(
-            Commands.deadline(drive1, buildSpinUpCommand(fuel)),
-            buildShootFeedCommand(fuel),
-            Commands.deadline(drive2, buildHookOpenCommand(climber)),
-            buildClimbDownCommand(climber)
+            Commands.deadline(drive1, buildHookOpenCommand(climber), buildSpinUpCommand(fuel)),
+            Commands.deadline(buildShootFeedCommand(fuel),   drivetrain.applyRequest(() -> brakeReq)),
+            drive2,
+            Commands.deadline(buildClimbDownCommand(climber), drivetrain.applyRequest(() -> brakeReq))
         ).withName("Everybot");
     }
 
